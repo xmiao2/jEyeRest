@@ -3,7 +3,35 @@
       <title></title>
    </head>
    <body>
-      Minutes between alert:
-      <input id="jEyeRest-alert-interval" type="text/>
+      <h1>Rest your eyes before you go blind, fool.</h1>
+      Minute(s) until alert:
+      <input id="jEyeRest-alert-interval" type="text"/>
+      <button id="jEyeRest-start-interval">Start</button>
+      
+      <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+      <script>
+         $("#jEyeRest-start-interval").on("click", function(){
+            var self = this;
+            $(self).prop("disabled","disabled");
+            var minutes = $("#jEyeRest-alert-interval").val();
+            if(!minutes || minutes <= 0) {
+               minutes = window.DEFAULT_MINUTES;
+            } else if(minutes < 0) {
+               minutes = 1;
+            }
+            $("#jEyeRest-alert-interval").val(minutes);
+            var interval = minutes * 60 * 1000;
+            window.alertInterval = setInterval(function(){
+               alert("Rest your eyes now!");
+               window.clearInterval(window.alertInterval);
+               $(self).removeProp("disabled");
+            },interval);
+         });
+         $(function(){
+            window.DEFAULT_MINUTES = 20;
+            window.alertInterval = {};
+            $("#jEyeRest-alert-interval").attr("placeholder", DEFAULT_MINUTES);
+         });
+      </script>
    </body>
 </html>
