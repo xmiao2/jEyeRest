@@ -13,24 +13,31 @@
          $("#jEyeRest-start-interval").on("click", function(){
             var self = this;
             $(self).prop("disabled","disabled");
+            $("body").css("background-color", window.JEYEREST_DEFAULTS.BGCOLOR_RUN);
             var minutes = $("#jEyeRest-alert-interval").val();
             if(!minutes || minutes <= 0) {
-               minutes = window.DEFAULT_MINUTES;
-            } else if(minutes < 0) {
+               minutes = window.JEYEREST_DEFAULTS.MINUTES;
+            } else if(minutes < 1) {
                minutes = 1;
             }
             $("#jEyeRest-alert-interval").val(minutes);
             var interval = minutes * 60 * 1000;
             window.alertInterval = setInterval(function(){
-               alert("Rest your eyes now!");
                window.clearInterval(window.alertInterval);
+               $("body").css("background-color", window.JEYEREST_DEFAULTS.BGCOLOR_INIT);
                $(self).removeProp("disabled");
+               alert("Rest your eyes now!");
             },interval);
          });
          $(function(){
-            window.DEFAULT_MINUTES = 20;
+            window.JEYEREST_DEFAULTS = {
+               MINUTES: 20,
+               BGCOLOR_INIT: "#bada55",
+               BGCOLOR_RUN: "#ddd"
+            };
             window.alertInterval = {};
-            $("#jEyeRest-alert-interval").attr("placeholder", DEFAULT_MINUTES);
+            $("body").css("background-color", JEYEREST_DEFAULTS.BGCOLOR_INIT);
+            $("#jEyeRest-alert-interval").attr("placeholder", JEYEREST_DEFAULTS.MINUTES);
          });
       </script>
    </body>
