@@ -1,6 +1,7 @@
 <html>
    <head>
       <title>Rest Your Eyes</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
       <style>
          body {
@@ -107,7 +108,7 @@
 
             // Validate Input
             var minutes = $("#jEyeRest-alert-interval").val();
-            if(!minutes || minutes <= 0) {
+            if(!minutes || typeof minutes !== "number" || minutes <= 0) {
                minutes = window.JEYEREST_DEFAULTS.MINUTES;
             } else if(minutes < 1) {
                minutes = 1;
