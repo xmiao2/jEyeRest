@@ -87,6 +87,7 @@
       <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
       <script>
          function renderTimer(timer) {
+            // Render formatted time
             $("#jEyeRest-timer").html(("0"+Math.floor((timer/3600000)%60)).substr(-2) + ":" + ("0"+Math.floor((timer/60000)%60)).substr(-2) + ":" + ("0"+Math.floor((timer/1000)%60)).substr(-2));
          }
 
@@ -103,6 +104,8 @@
             $(".alertOff").hide();
             $('.alertOn').show();
             $("body").css("background-color", window.JEYEREST_DEFAULTS.BGCOLOR_RUN);
+
+            // Validate Input
             var minutes = $("#jEyeRest-alert-interval").val();
             if(!minutes || minutes <= 0) {
                minutes = window.JEYEREST_DEFAULTS.MINUTES;
@@ -112,15 +115,20 @@
                minutes = 1440;
             }
             $("#jEyeRest-alert-interval").val(minutes);
+
+            // Process input
             var interval = minutes * 60 * 1000;
             var timer = interval;
             var timerInterval = 1000;
             renderTimer(timer);
             
+            // Timer Interval
             window.renderInterval = setInterval(function(){
                timer -= timerInterval;
                renderTimer(timer);
             }, timerInterval);
+
+            // Alert Interval
             window.alertInterval = setInterval(function(){
                clearAlert();
                alert("Stand your butt up and rest your eyes NOW!!!");
