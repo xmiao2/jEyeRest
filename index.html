@@ -1,41 +1,144 @@
 <html>
    <head>
-      <title></title>
+      <title>Rest Your Eyes</title>
+      <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+      <style>
+         body {
+            position: relative;
+            text-align: center;
+         }
+
+         * {
+            font-family: 'Kaushan Script', cursive;
+         }
+
+         a {
+            color: rgb(70,70,70);
+         }
+
+         button {
+            margin-top: 1rem;
+            width: 10rem;
+            cursor: pointer;
+
+            padding: 0.5rem 1.5rem;
+
+            background-color: rgba(0,0,0,0);
+
+            color: black;
+            font-size: 1.5rem;
+
+            border: none;
+            border-radius: 4px;
+   
+            text-shadow: none;
+            box-shadow: 0 0 0 2px black inset !important;
+
+            outline: 0;
+         }
+
+         button:hover,
+         button:focus,
+         button:active {
+            background: black;
+            color: white;
+            box-shadow: 0 0 0 2px white inset !important;
+         }
+
+         #jEyeRest {
+            position: absolute;
+            top: 25%;
+            width: 100%;
+         }
+
+         #jEyeRest-timer {
+            font-size: 3rem;
+         }
+
+         #jEyeRest-logo {
+            margin-top: 10rem;
+         }
+
+         .main-display {
+            line-height: 5rem;
+         }
+      </style>
    </head>
    <body>
-      <h1>Rest your eyes before you go blind, fool.</h1>
-      Minute(s) until alert:
-      <input id="jEyeRest-alert-interval" type="text"/>
-      <button id="jEyeRest-start-interval">Start</button>
+      <div id="jEyeRest">
+         <h1>Rest your eyes before you go blind, fool.</h1>
+         <div class="alertOff">
+            <div class="main-display">
+               Minute(s) until you stand your butt up:
+               <input id="jEyeRest-alert-interval" type="text"/>
+            </div>
+            <button id="jEyeRest-start-interval">Start</button>
+         </div>
+         <div class="alertOn" hidden>
+            <div class="main-display">
+               <span id="jEyeRest-timer">00:00</span> minutes until you stand your butt up
+            </div>
+            <button id="jEyeRest-stop-interval">Stop</button>
+         </div>
+
+         <div id="jEyeRest-logo">jEyeRest - by <a href="http://xmiao2.github.io">Xiaohang Miao</a></div>
+      </div>
       
       <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
       <script>
-         $("#jEyeRest-start-interval").on("click", function(){
+         function renderTimer(timer) {
+            $("#jEyeRest-timer").html(("0"+Math.floor((timer/3600000)%60)).substr(-2) + ":" + ("0"+Math.floor((timer/60000)%60)).substr(-2) + ":" + ("0"+Math.floor((timer/1000)%60)).substr(-2));
+         }
+
+         function clearAlert() {
+            window.clearInterval(window.alertInterval);
+            window.clearInterval(window.renderInterval);
+            $("body").css("background-color", window.JEYEREST_DEFAULTS.BGCOLOR_INIT);
+            $(".alertOff").show();
+            $('.alertOn').hide();
+         }
+
+         $("#jEyeRest-start-interval").on("click", function(event){
             var self = this;
-            $(self).prop("disabled","disabled");
+            $(".alertOff").hide();
+            $('.alertOn').show();
             $("body").css("background-color", window.JEYEREST_DEFAULTS.BGCOLOR_RUN);
             var minutes = $("#jEyeRest-alert-interval").val();
             if(!minutes || minutes <= 0) {
                minutes = window.JEYEREST_DEFAULTS.MINUTES;
             } else if(minutes < 1) {
                minutes = 1;
+            } else if(minutes > 1440) { // # of minutes in a day
+               minutes = 1440;
             }
             $("#jEyeRest-alert-interval").val(minutes);
             var interval = minutes * 60 * 1000;
+            var timer = interval;
+            var timerInterval = 1000;
+            renderTimer(timer);
+            
+            window.renderInterval = setInterval(function(){
+               timer -= timerInterval;
+               renderTimer(timer);
+            }, timerInterval);
             window.alertInterval = setInterval(function(){
-               window.clearInterval(window.alertInterval);
-               $("body").css("background-color", window.JEYEREST_DEFAULTS.BGCOLOR_INIT);
-               $(self).removeProp("disabled");
-               alert("Rest your eyes now!");
+               clearAlert();
+               alert("Stand your butt up and rest your eyes NOW!!!");
             },interval);
          });
+   
+         $("#jEyeRest-stop-interval").on("click", function(event){
+            clearAlert();
+         })
+
          $(function(){
             window.JEYEREST_DEFAULTS = {
                MINUTES: 20,
-               BGCOLOR_INIT: "#bada55",
-               BGCOLOR_RUN: "#ddd"
+               BGCOLOR_INIT: "#78A3CC",
+               BGCOLOR_RUN: "#B6D68D"
             };
             window.alertInterval = {};
+            window.renderInterval = {};
             $("body").css("background-color", JEYEREST_DEFAULTS.BGCOLOR_INIT);
             $("#jEyeRest-alert-interval").attr("placeholder", JEYEREST_DEFAULTS.MINUTES);
          });
